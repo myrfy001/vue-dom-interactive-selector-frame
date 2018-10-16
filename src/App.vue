@@ -11,9 +11,17 @@ export default {
       type: String,
       default: ''
     },
-    selected: {
-      type: Array,
-      default: () => []
+    value: {
+      type: Object,
+      default: () => {}
+    },
+    config: {
+      type: Object,
+      default: () => {}
+    },
+    group:{
+      type: String,
+      default: 'group1'
     }
   },
   data() {
@@ -22,16 +30,26 @@ export default {
   },
   mounted() {
     const iframe = document.getElementById('InteractiveDomSelector')
-    iframe.onload = function() {
+    iframe.onload = () => {
       const document_ = iframe.contentDocument
-      const _interactive_dom_selector_stub = new InteractiveSelector(document_)
+      this._interactive_dom_selector_stub = new InteractiveSelector(document_, this.select_cb, this.config)
+      this._interactive_dom_selector_stub.cur_group = this.group
+      this._interactive_dom_selector_stub.inject()
       document_._interactive_dom_selector_stub = _interactive_dom_selector_stub
     }
   },
   methods: {
-    input() {
-      console.log('input')
+    select_cb() {
+      this.$emit('input', {...this._interactive_dom_selector_stub._selected_node})
     }
+  },
+  watch: { 
+    group: function(newVal, oldVal) { // watch it
+      this._interactive_dom_selector_stub.cur_group = newVal
+    },
+    value: function(newVal, oldVal) { // watch it
+      this._interactive_dom_selector_stub.selected_node = newVal
+    },
   }
 }
 </script>
