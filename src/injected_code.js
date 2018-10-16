@@ -4,13 +4,16 @@ export class InteractiveSelector {
 
     constructor(ifdocument){
         this.ifdocument = ifdocument
-        this.selected_node = []
+        this._selected_node = []
         this.inject_style()
 
         ifdocument.addEventListener('mouseover', this.mouseover_handler.bind(this), { capture: true })
         ifdocument.addEventListener('mouseout', this.mouseout_handler.bind(this), { capture: true })
         ifdocument.addEventListener('click', this.mouseclick_handler.bind(this), { capture: true })
     }
+
+    get selected_node() {return this._selected_node}
+    set selected_node(nodes) {this._selected_node=nodes; this.update_selected_style()}
 
 
     inject_style() {
@@ -47,16 +50,16 @@ export class InteractiveSelector {
 
     mouseclick_handler(e) {
         const node = e.target
-        const selected_idx = this.selected_node.indexOf(node)
+        const selected_idx = this._selected_node.indexOf(node)
         if ( selected_idx === -1){
-            this.selected_node.push(node)
+            this._selected_node.push(node)
         }else{
-            this.selected_node.splice(selected_idx, 1)
+            this._selected_node.splice(selected_idx, 1)
         }
-        this.update_selected()
+        this.update_selected_style()
     }
 
-    update_selected() {
+    update_selected_style() {
         // Make a copy of query result because the result will change when
         // class is modified, which makes the for loop below unstable
         const old_selected = Array.from(this.ifdocument.getElementsByClassName(
@@ -69,7 +72,7 @@ export class InteractiveSelector {
             console.log(old_selected)
         }
 
-        this.selected_node.forEach((e) => {
+        this._selected_node.forEach((e) => {
             this.modify_highlight(e, 'select', 'add')
         })
     }
