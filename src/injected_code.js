@@ -13,10 +13,10 @@ export class InteractiveSelector {
     }
 
 
-     inject_style() {
+    inject_style() {
         var n = this.ifdocument.createElement('style')
         n.innerHTML = `
-        .-interactive-dom-selector-injected-style-highlight-selected{outline:2px solid red!important}
+        .-interactive-dom-selector-injected-style-highlight-selected{outline:2px solid red!important; background-color:#ff00000a!important}
         .-interactive-dom-selector-injected-style-highlight-mouse-hover{outline:2px solid green!important}
         `
         this.ifdocument.body.appendChild(n)
@@ -57,11 +57,16 @@ export class InteractiveSelector {
     }
 
     update_selected() {
-        const old_selected = this.ifdocument.getElementsByClassName(
+        // Make a copy of query result because the result will change when
+        // class is modified, which makes the for loop below unstable
+        const old_selected = Array.from(this.ifdocument.getElementsByClassName(
             '-interactive-dom-selector-injected-style-highlight-selected'
-            )
+            ))
+        
         for (var element of old_selected){
+            console.log(old_selected)
             this.modify_highlight(element, 'select', 'remove')
+            console.log(old_selected)
         }
 
         this.selected_node.forEach((e) => {
