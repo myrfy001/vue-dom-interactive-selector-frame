@@ -31,8 +31,9 @@ export default {
   mounted() {
     const iframe = document.getElementById('InteractiveDomSelector')
     iframe.onload = () => {
+      const window_ = iframe.contentWindow
       const document_ = iframe.contentDocument
-      this._interactive_dom_selector_stub = new InteractiveSelector(document_, this.select_cb, this.config)
+      this._interactive_dom_selector_stub = new InteractiveSelector(window_, this.select_cb, this.config)
       this._interactive_dom_selector_stub.cur_group = this.group
       this._interactive_dom_selector_stub.inject()
       document_._interactive_dom_selector_stub = _interactive_dom_selector_stub
